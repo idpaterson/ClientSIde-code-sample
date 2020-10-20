@@ -32,13 +32,18 @@
       left: 5px;
       right: 0px;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 
 <body>
 
-  <div id="bee-plugin-container"></div>
+  <div id="bee-plugin-container" class="hidden"></div>
   <div id="integrator-bottom-bar">
+    <button type="button" onclick="toggleEditor()">Toggle editor</button>
     <!-- You can change the download function to get the JSON and use this input to load it -->
     Select template to load:
     <input id="choose-template" type="file" />
@@ -128,7 +133,7 @@
   var beeConfig = {
     uid: 'test1-clientside',
     container: 'bee-plugin-container',
-    autosave: 15,
+    autosave: 5,
     language: 'en-US',
     trackChanges: true,
     specialLinks: specialLinks,
@@ -180,6 +185,9 @@
     },
     onAutoSave: function (jsonFile) { // + thumbnail? 
       console.log(new Date().toISOString() + ' autosaving...');
+      if (jsonFile.indexOf('"height":0') >= 0) {
+        console.error('computedStyle contains zero sizes');
+      }
       window.localStorage.setItem('newsletter.autosave', jsonFile);
     },
     onSend: function (htmlFile) {
@@ -187,6 +195,9 @@
     },
     onError: function (errorMessage) {
       console.log('onError ', errorMessage);
+    },
+    onLoad: function () {
+      console.log('loaded');
     }
   };
 
@@ -225,6 +236,10 @@
           });
       });
     });
+
+    function toggleEditor() {
+      document.getElementById('bee-plugin-container').classList.toggle('hidden');
+    }
 
 </script>
 
